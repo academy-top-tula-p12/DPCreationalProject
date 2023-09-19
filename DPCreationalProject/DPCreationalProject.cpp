@@ -3,7 +3,8 @@
 
 //#include "ClassicSolution.h"
 //#include "FactoryMethod.h"
-#include "AbstarctFactory.h"
+//#include "AbstarctFactory.h"
+#include "Builder.h"
 
 /* Classic object function factory
 Unit* CreateUnit(UnitType type)
@@ -47,6 +48,7 @@ void FactoryMethodExample()
 }
 */
 
+/*
 void AbstarctFactoryExample()
 {
 	class Army
@@ -105,6 +107,7 @@ void AbstarctFactoryExample()
 	std::cout << romeArmy->Info() << "\n";
 	std::cout << carthagenArmy->Info() << "\n";
 }
+*/
 
 
 
@@ -112,5 +115,25 @@ int main()
 {
 	srand(time(nullptr));
 	
+	InfantryBuilder* infantryBuilder = Infantry::GetBuilder();
+
+	infantryBuilder->SetAddon("Dagger");
+	infantryBuilder->SetAddon("Flask");
+	infantryBuilder->SetWeapon("Sword");
+	infantryBuilder->SetArmor("Chain mail");
 	
+	Infantry* infantry1 = infantryBuilder->GetUnit();
+	
+	std::cout << infantry1->ToString() << "\n";
+
+	Infantry* infantry2 = infantryBuilder->SetNew()
+		->SetArmor("Tunic")
+		->SetWeapon("Spear")
+		->SetAddon("Sling")
+		->GetUnit();
+
+	//Infantry* infantry2 = infantryBuilder->GetUnit();
+
+	std::cout << infantry1->ToString() << "\n";
+	std::cout << infantry2->ToString() << "\n";
 }
