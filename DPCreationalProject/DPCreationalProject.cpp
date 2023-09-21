@@ -1,12 +1,14 @@
 ﻿#include <iostream>
 #include <vector>
 #include <chrono>
+#include <thread>
 
 //#include "ClassicSolution.h"
 //#include "FactoryMethod.h"
 //#include "AbstarctFactory.h"
 //#include "Builder.h"
-#include "Prototype.h"
+//#include "Prototype.h"
+#include "Singleton.h"
 
 /* Classic object function factory
 Unit* CreateUnit(UnitType type)
@@ -125,11 +127,11 @@ void AbstarctFactoryExample()
 //
 //	std::cout << infantry1->ToString() << "\n";
 //
-//	Infantry* infantry2 = infantryBuilder->SetNew()
-//		->SetArmor("Tunic")
-//		->SetWeapon("Spear")
-//		->SetAddon("Sling")
-//		->GetUnit();
+	//Infantry* infantry2 = infantryBuilder->SetNew()
+	//	->SetArmor("Tunic")
+	//	->SetWeapon("Spear")
+	//	->SetAddon("Sling")
+	//	->GetUnit();
 //
 //	//Infantry* infantry2 = infantryBuilder->GetUnit();
 //
@@ -137,64 +139,85 @@ void AbstarctFactoryExample()
 //	std::cout << infantry2->ToString() << "\n";
 //}
 
-class Army
+//void PrototypeExample()
+//{
+//	class Army
+//	{
+//		std::string title;
+//		std::vector<InfantryUnit*> infantries;
+//		std::vector<ArcherUnit*> archers;
+//		std::vector<CavalryUnit*> cavalries;
+//	public:
+//		Army(std::string title, int iCount, int aCount, int cCount)
+//		{
+//			IFactory* factory;
+//
+//			factory = new InfantryFactory();
+//			for (int i = 0; i < iCount; i++)
+//				infantries.push_back((InfantryUnit*)factory->CreateUnit());
+//			delete factory;
+//
+//			factory = new ArcherFactory();
+//			for (int i = 0; i < aCount; i++)
+//				archers.push_back((ArcherUnit*)factory->CreateUnit());
+//			delete factory;
+//
+//			factory = new CavalryFactory();
+//			for (int i = 0; i < cCount; i++)
+//				cavalries.push_back((CavalryUnit*)factory->CreateUnit());
+//			delete factory;
+//		}
+//
+//		Army(int iCount, int aCount, int cCount, std::string title)
+//		{
+//			StroreClones store;
+//			for (int i = 0; i < iCount; i++)
+//				infantries.push_back((InfantryUnit*)store.GetClone(UnitType::Infantry));
+//			for (int i = 0; i < aCount; i++)
+//				archers.push_back((ArcherUnit*)store.GetClone(UnitType::Archer));
+//			for (int i = 0; i < cCount; i++)
+//				cavalries.push_back((CavalryUnit*)store.GetClone(UnitType::Cavalry));
+//		}
+//
+//		~Army()
+//		{
+//			infantries.clear();
+//			archers.clear();
+//			cavalries.clear();
+//		}
+//	};
+//
+//	const auto start1 = std::chrono::steady_clock::now();
+//	Army army1("army1", 1000, 1000, 1000);
+//	const auto end1 = std::chrono::steady_clock::now();
+//	std::cout << std::chrono::duration_cast<std::chrono::microseconds>(end1 - start1).count() << "\n";
+//
+//	const auto start2 = std::chrono::steady_clock::now();
+//	Army army2(1000, 1000, 1000, "army2");
+//	const auto end2 = std::chrono::steady_clock::now();
+//	std::cout << std::chrono::duration_cast<std::chrono::microseconds>(end2 - start2).count() << "\n";
+//}
+
+
+void ComputerLaunch(std::string title)
 {
-	std::string title;
-	std::vector<InfantryUnit*> infantries;
-	std::vector<ArcherUnit*> archers;
-	std::vector<CavalryUnit*> cavalries;
-public:
-	Army(std::string title, int iCount, int aCount, int cCount)
-	{
-		IFactory* factory;
+	Computer* computer = new Computer();
 
-		factory = new InfantryFactory();
-		for (int i = 0; i < iCount; i++)
-			infantries.push_back((InfantryUnit*)factory->CreateUnit());
-		delete factory;
-
-		factory = new ArcherFactory();
-		for (int i = 0; i < aCount; i++)
-			archers.push_back((ArcherUnit*)factory->CreateUnit());
-		delete factory;
-
-		factory = new CavalryFactory();
-		for (int i = 0; i < cCount; i++)
-			cavalries.push_back((CavalryUnit*)factory->CreateUnit());
-		delete factory;
-	}
-
-	Army(int iCount, int aCount, int cCount, std::string title)
-	{
-		StroreClones store;
-		for (int i = 0; i < iCount; i++)
-			infantries.push_back((InfantryUnit*)store.GetClone(UnitType::Infantry));
-		for (int i = 0; i < aCount; i++)
-			archers.push_back((ArcherUnit*)store.GetClone(UnitType::Archer));
-		for (int i = 0; i < cCount; i++)
-			cavalries.push_back((CavalryUnit*)store.GetClone(UnitType::Cavalry));
-	}
-
-	~Army()
-	{
-		infantries.clear();
-		archers.clear();
-		cavalries.clear();
-	}
-};
+	computer->Lounch(title);
+	std::cout << computer->System()->Title() << "\n";
+}
 
 int main()
 {
 	srand(time(nullptr));
 	
-	const auto start1 = std::chrono::steady_clock::now();
-	Army army1("army1", 1000, 1000, 1000);
-	const auto end1 = std::chrono::steady_clock::now();
-	std::cout << std::chrono::duration_cast<std::chrono::microseconds>(end1 - start1).count() << "\n";
+	std::thread th1(ComputerLaunch, "Windows");
+	std::thread th2(ComputerLaunch, "Linux");
 
-	const auto start2 = std::chrono::steady_clock::now();
-	Army army2(1000, 1000, 1000, "army2");
-	const auto end2 = std::chrono::steady_clock::now();
-	std::cout << std::chrono::duration_cast<std::chrono::microseconds>(end2 - start2).count() << "\n";
-	
+	th1.join();
+	th2.join();
+
+	std::cout << "\n";
+
+	system("pause");
 }
